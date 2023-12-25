@@ -26,44 +26,26 @@ class Car:
 # car3 = Car("Corolla", 2021, "XYZ789", 0, 45.0)
 
 
-# Example Usage:     
-# Creating instances of the Car class
-car1 = Car("Camry", 2022, "ABC123", 1, 50.0)
-car2 = Car("Corolla", 2021, "XYZ789", 0, 45.0)
-car3 = Car("Rav4", 2023, "PQR456", 0, 55.0)
-car_lst = [car1, car2, car3]  # .show is used to show all details
-# Displaying information and availability for each car
-car1.show_car()
-car1.available()
-car2.show_car()
-car2.available()  # Corrected the method name from 'car3.available()' to 'car2.available()'
-car3.show_car()
-car3.available()
-
-# Car.set_company("Tesla")     # Now we can change this var using class var
-# print(Car.company)
-
 class Customer:
-    def __init__(self, name, phone_num, rent):
+    def __init__(self, name, phone_num):
         self.name = name
         self.phone_num = phone_num
-        self.rent = rent
+        self.rent = 0  # Initialize rent to zero for a new customer
         self.rent_history = []
-        # self.rent_history = {'month1':rent, 'month2':rent, 'month3':rent}
-        
+
     def customer_detail(self):
         print("Customer Details:")
         print(f"Name: {self.name}\nPhone Number: {self.phone_num}\nRent: {self.rent}\n")
-        
+
     def adjust_rent(self, new_rent):
         self.rent = new_rent
         print(f"Rent adjusted to: {self.rent}")
 
     def add_rent(self, additional_rent):
         self.rent += additional_rent
-        print(f"Additional rent added") # . Total rent now: {self.rent}")
+        print(f"Additional rent added. Total rent now: {self.rent}")
         self.rent_history.append(self.rent)
-    
+
     def total_rent(self):
         self.total_rent = sum(self.rent_history)
         print(f"Total rent now: {self.rent}")
@@ -71,17 +53,17 @@ class Customer:
     
 
 # Example:
-customer1 = Customer("John Doe", "123-456-7890", 500.0)
-customer2 = Customer("Alice Smith", "987-654-3210", 700.0)
-customer3 = Customer("Bob Johnson", "555-123-4567", 600.0)
+customer1 = Customer("John Doe", "123-456-7890")
+customer2 = Customer("Alice Smith", "987-654-3210")
+customer3 = Customer("Bob Johnson", "555-123-4567")
 # Adjusting the rent
-customer1.adjust_rent(600.0)
+# customer1.adjust_rent(600.0)
 
-customer1.add_rent(500) # Adding rent 
-# Displaying details for each customer
-customer1.customer_detail()
-customer2.customer_detail()
-customer3.customer_detail()
+# customer1.add_rent(500) # Adding rent 
+# # Displaying details for each customer
+# customer1.customer_detail()
+# customer2.customer_detail()
+# customer3.customer_detail()
 
 class Connect:
     def __init__(self, car_vehicle, customer):
@@ -142,7 +124,7 @@ class CarRentalSystem:
     def menu(self):
         while True:
             print("Welcome to Car Rental Management System".center(95, " "))
-            print("\nMenu:")
+            print("\n Menu:")
             print("1. Show All Cars")
             print("2. Show Available Cars")
             print("3. Show All Customers")
@@ -222,14 +204,13 @@ class CarRentalSystem:
 
         new_car = Car(model, year, licence_plate, availability_status, rental_rate)
         self.car_lst.append(new_car)
-        print("New car added successfully.")
+        print("New car added successfully.")    
 
     def add_new_customer_and_connect_car(self):
         name = input("Enter customer name: ")
         phone_num = input("Enter customer phone number: ")
-        rent = float(input("Enter initial rent: "))
 
-        new_customer = Customer(name, phone_num, rent)
+        new_customer = Customer(name, phone_num)
         self.customer_lst.append(new_customer)
 
         self.show_available_cars()
@@ -240,6 +221,11 @@ class CarRentalSystem:
             connect.connect(0)  # Assuming the first available car is selected
 
             rental_days = int(input("Enter the number of rental days: "))
+            rental_rate = self.car_lst[index_num].rental_rate
+            rent_amount = rental_days * rental_rate
+
+            new_customer.add_rent(rent_amount)
+
             rental_record = RentalRecord(new_customer, self.car_lst[index_num], rental_days)
             self.rental_records.append(rental_record)
 
@@ -247,7 +233,7 @@ class CarRentalSystem:
 
         else:
             print("Invalid car index. Customer not connected.")
-
-# Example Usage:
-car_rental_system = CarRentalSystem()
-car_rental_system.menu()
+            
+            
+car_system = CarRentalSystem()
+car_system.menu()
