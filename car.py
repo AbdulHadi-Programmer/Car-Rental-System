@@ -1,4 +1,4 @@
-# Car Rental System:
+# Car Rental System
 class Car:
     company = "Toyota"
     
@@ -20,11 +20,11 @@ class Car:
     def available(self):
         print(f"Car Model: {self.model}\nCar Company: {self.company}\nAvailability: {bool(self.availability_status)}\nRental Rent per Day: {self.rental_rate}\n")
 
-# car1 = Car("Camry", 2022, "ABC123", 1, 50.0)
-# car2 = Car("Civic", 2021, "XYT099", 0, 85.0)
-# car3 = Car("Rav4", 2023, "PQR456", 0, 55.0)
-# car3 = Car("Corolla", 2021, "XYZ789", 0, 45.0)
-
+# Default cars
+car1 = Car("Camry", 2022, "ABC123", 1, 50.0)
+car2 = Car("Civic", 2021, "XYT099", 0, 85.0)
+car3 = Car("Rav4", 2023, "PQR456", 0, 55.0)
+car4 = Car("Corolla", 2021, "XYZ789", 0, 45.0)
 
 class Customer:
     def __init__(self, name, phone_num):
@@ -48,35 +48,29 @@ class Customer:
 
     def total_rent(self):
         self.total_rent = sum(self.rent_history)
-        print(f"Total rent now: {self.rent}")
-    
+        print(f"Total rent now: {self.total_rent}")
     
 
-# Example:
+# Default customers
 customer1 = Customer("John Doe", "123-456-7890")
 customer2 = Customer("Alice Smith", "987-654-3210")
 customer3 = Customer("Bob Johnson", "555-123-4567")
-# Adjusting the rent
-# customer1.adjust_rent(600.0)
-
-# customer1.add_rent(500) # Adding rent 
-# # Displaying details for each customer
-# customer1.customer_detail()
-# customer2.customer_detail()
-# customer3.customer_detail()
 
 class Connect:
     def __init__(self, car_vehicle, customer):
         self.vehicle = car_vehicle  # Car class Object
         self.customer = customer    # Customer class Object
-        self.available_car = list()
+        self.available_car = [car1, car2, car3, car4]  # List of available cars
         self.unavailable_car = list()
 
     def show_all_available_cars(self):
         print("\nAll Available Cars:")
-        for index, car in enumerate(self.available_car, start=1):
-            car.show_car()
-            print()
+        if not self.available_car:
+            print("There is no car available.")
+        else:
+            for index, car in enumerate(self.available_car, start=1):
+                car.show_car()
+                print()
 
     def show_all_unavailable_cars(self):
         print("\nAll Unavailable Cars:")
@@ -114,25 +108,24 @@ class RentalRecord:
 
 # You can use this class to keep track of rental records in the CarRentalSystem class.
 
-
 class CarRentalSystem:
     def __init__(self):
-        self.car_lst = []  # List to store Car objects
-        self.customer_lst = []  # List to store Customer objects
+        self.car_lst = [car1, car2, car3, car4]  # List to store Car objects
+        self.customer_lst = [customer1, customer2, customer3]  # List to store Customer objects
         self.rental_records = []  # List to store RentalRecord objects
 
     def menu(self):
         while True:
+            print(119*"*")
             print("Welcome to Car Rental Management System".center(95, " "))
-            print("\n Menu:")
+            print("\nMenu:")
             print("1. Show All Cars")
             print("2. Show Available Cars")
             print("3. Show All Customers")
-            print("4. Show All Customers Detail")
-            print("5. Show Rent History of Every Person")
-            print("6. Add New Car")
-            print("7. Add New Customer and Connect with Car")
-            print("8. Exit")
+            print("4. Show Rent History of Every Person")
+            print("5. Add New Car")
+            print("6. Add New Customer and Connect with Car")
+            print("7. Exit")
 
             choice = int(input("Enter the option: "))
 
@@ -146,18 +139,15 @@ class CarRentalSystem:
                 self.show_all_customers()
 
             elif choice == 4:
-                self.show_all_customers_detail()
-
-            elif choice == 5:
                 self.show_rent_history()
 
-            elif choice == 6:
+            elif choice == 5:
                 self.add_new_car()
 
-            elif choice == 7:
+            elif choice == 6:
                 self.add_new_customer_and_connect_car()
 
-            elif choice == 8:
+            elif choice == 7:
                 print("Exiting the system.")
                 break
 
@@ -172,8 +162,11 @@ class CarRentalSystem:
 
     def show_available_cars(self):
         print("\nAll Available Cars:")
-        for index, car in enumerate(self.car_lst, start=1):
-            if car.availability_status == 1:
+        available_cars = [car for car in self.car_lst if car.availability_status == 1]
+        if not available_cars:
+            print("There is no car available.")
+        else:
+            for index, car in enumerate(available_cars, start=1):
                 car.show_car()
                 print()
 
@@ -183,11 +176,6 @@ class CarRentalSystem:
             customer.customer_detail()
             print()
 
-    def show_all_customers_detail(self):
-        print("\nAll Customers Detail:")
-        for index, customer in enumerate(self.customer_lst, start=1):
-            customer.customer_detail()
-            print()
 
     def show_rent_history(self):
         print("\nRent History:")
@@ -213,27 +201,35 @@ class CarRentalSystem:
         new_customer = Customer(name, phone_num)
         self.customer_lst.append(new_customer)
 
-        self.show_available_cars()
-        index_num = int(input("Enter the index of the car to connect: "))
-
-        if 0 <= index_num < len(self.car_lst):
-            connect = Connect(self.car_lst[index_num], new_customer)
-            connect.connect(0)  # Assuming the first available car is selected
-
-            rental_days = int(input("Enter the number of rental days: "))
-            rental_rate = self.car_lst[index_num].rental_rate
-            rent_amount = rental_days * rental_rate
-
-            new_customer.add_rent(rent_amount)
-
-            rental_record = RentalRecord(new_customer, self.car_lst[index_num], rental_days)
-            self.rental_records.append(rental_record)
-
-            print("Customer added and connected with a car successfully.")
-
+        available_cars = [car for car in self.car_lst if car.availability_status == 1]
+        if not available_cars:
+            print("There is no car available.")
         else:
-            print("Invalid car index. Customer not connected.")
-            
+            print("\nAvailable Cars:")
+            for index, car in enumerate(available_cars, start=1):
+                car.show_car()
+                print()
+
+            index_num = int(input("Enter the index of the car to connect: ")) - 1
+
+            if 0 <= index_num < len(available_cars):
+                connect = Connect(available_cars[index_num], new_customer)
+                connect.connect(0)  # Assuming the first available car is selected
+
+                rental_days = int(input("Enter the number of rental days: "))
+                rental_rate = available_cars[index_num].rental_rate
+                rent_amount = rental_days * rental_rate
+
+                new_customer.add_rent(rent_amount)
+
+                rental_record = RentalRecord(new_customer, available_cars[index_num], rental_days)
+                self.rental_records.append(rental_record)
+
+                print("Customer added and connected with a car successfully.")
+
+            else:
+                print("Invalid car index. Customer not connected.")
+
             
 car_system = CarRentalSystem()
 car_system.menu()
